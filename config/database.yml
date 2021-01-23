@@ -50,5 +50,6 @@ test:
 production:
   <<: *default
   database: Convert2PDF_production
-  username: Convert2PDF
+  username: pdfer
+  adapter: postgresql
   password: <%= ENV['CONVERT2PDF_DATABASE_PASSWORD'] %>

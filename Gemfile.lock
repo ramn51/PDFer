@@ -94,6 +94,7 @@ GEM
     nokogiri (1.10.10-x64-mingw32)
       mini_portile2 (~> 2.4.0)
     pdf-core (0.8.1)
+    pg (1.2.3-x64-mingw32)
     prawn (2.3.0)
       pdf-core (~> 0.8.1)
       ttfunk (~> 1.6)
@@ -183,6 +184,7 @@ DEPENDENCIES
   jquery-rails
   libreconv
   mysql2 (>= 0.4.4)
+  pg
   prawn
   puma (~> 4.1)
   rails (~> 6.0.3, >= 6.0.3.4)
