@@ -1,0 +1,48 @@
+<h1> Hello <%= file_name %> </h1>
+
+<%# if time_to_destory  %>
+<div id="download">
+  <%= link_to "Download the file", download_path(:download_file_name => file_name), target: "_blank"%>
+</div>
+<%= link_to "Back to Main page", root_path %>
+
+<body>
+<div id="delete_message">The PDF deletes it in  <span id="time">01:00</span> minutes!</div>
+</body>
+
+<script>
+    function startTimer(duration, display) {
+        var timer = duration;
+        var minutes, seconds, timeLimitInSec = 60;
+        var timePeriod = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                // timer = duration;
+                clearInterval(timePeriod);
+
+                downloadLink = document.querySelector("#download");
+                downloadLink.style.visibility = "hidden";
+
+                deleteMessage = document.querySelector("#delete_message");
+                deleteMessage.removeChild(deleteMessage.firstElementChild);
+                deleteMessage.textContent = "File has been deleted"
+
+            }
+        }, 1000);
+
+    }
+
+    window.onload = function () {
+        var fiveMinutes = 60 * 1,
+            display = document.querySelector('#time');
+        startTimer(fiveMinutes, display);
+
+    };
+</script>

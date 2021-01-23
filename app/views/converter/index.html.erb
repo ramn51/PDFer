@@ -1,0 +1,17 @@
+<h1>File Converter</h1>
+<% if flash[:notice] %>
+  <div class="notice"><%= flash[:notice] %></div>
+<% end %>
+
+<%= form_for :conversion, :html => { :multipart => true }, :url =>{:action => 'convert'} do |f|%>
+  <%#= f.file_field :file, direct_upload: true, class: 'form-control' %>
+  <%= f.file_field :file, id: 'input_file' , class: 'form-control' %>
+
+  <%= f.submit "Upload", id: 'file_upload' ,data: {disable_with: "Converting..."} %>
+<% end %>
+
+<div class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+
+

@@ -1,0 +1,89 @@
+class ConverterController < ApplicationController
+
+  STORAGE_PATH = Rails.root.join('public', 'uploads')
+  DOWNLOAD_PATH = Rails.root.join('public', 'readys')
+  PDF_DELETE_BASE_TIME = 10 # 10 min
+
+  rescue_from ActionController::MissingFile, with: :error_render_method
+
+  def index
+    render 'index'
+  end
+
+  def convert
+    file_data = params[:conversion][:file]
+
+    if file_data.respond_to?(:read)
+      File.open(Rails.root.join('public', 'uploads', file_data.original_filename), 'wb') do |file|
+        file.write(file_data.read)
+      end
+
+      files = Dir.glob("#{Rails.root}/public/uploads/*")
+      file_to_convert = files.find { |x| x[file_data.original_filename] }
+
+      # remove extension of the file from name and set location and path for download
+      dest_file, dest_file_name = make_dest_file file_data
+
+      begin
+        Libreconv.convert(file_to_convert, dest_file)
+        logger.debug { "File Converted: #{file_data.original_filename}" }
+
+        render :action => "show", :locals => { file_name: dest_file_name, time_to_destory: PDF_DELETE_BASE_TIME  }
+        flash[:notice] = "Successfully converted"
+      rescue => e
+        logger.error { "Couldn't not convert file: #{file_data.class.name}: #{file_data.inspect}, #{e}" }
+        flash.now[:error] = 'Conversion failed'
+        render json: {message: 'something went wrong'}, status: :service_unavailable
+      ensure
+        file_cleanup file_data.original_filename, "uploads"
+        logger.info {"File cleanup initiated for uploaded doc #{file_data.original_filename}"}
+
+        file_cleanup dest_file_name, "readys" ,true
+      end
+
+    else
+      logger.error { "Bad file_data: #{file_data.class.name}: #{file_data.inspect}" }
+      render json: {message: 'file is not docx or doc'}, status: :bad_request
+    end
+
+  end
+
+  def show
+    render 'converter/show'
+  end
+
+  def download
+    file_name = params[:download_file_name]
+    send_file "#{Rails.root}/public/readys/" + "#{file_name}"
+  end
+
+  def error_render_method
+    respond_to do |format|
+      format.html { render :file => 'public/404.html' }
+      format.json { render json: 'Error in processing', status: :unprocessable_entity }
+    end
+  end
+
+  private
+
+  def converter_params
+    params.require(:conversion).permit(:file_name, :file_type, :download_file_name, :file => {})
+  end
+
+  def file_cleanup(file_name, directory, later=false)
+    path = "#{Rails.root}/public/#{directory}/" + "#{file_name}"
+    if later
+      UploadsCleanupJob.set(wait_until: Time.now + PDF_DELETE_BASE_TIME.minutes).perform_later path
+    else
+      UploadsCleanupJob.perform_later path
+    end
+  end
+
+  def make_dest_file(file_data)
+    file_name = file_data.original_filename.split('.docx')
+    dest_file_name = file_name[0] + '.pdf'
+
+    ["#{Rails.root}/public/readys" + '/' + "#{dest_file_name}", dest_file_name]
+  end
+
+end
