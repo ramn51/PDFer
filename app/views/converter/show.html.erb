@@ -1,4 +1,5 @@
-<h1> Hello <%= file_name %> </h1>
+<div class="convert_title"><h1> Your File has been converted </h1></div>
+<div class="convert_file"> <h6>Converted File Name: </h6> <%= file_name %></div>
 
 <%# if time_to_destory  %>
 <div id="download">
@@ -7,7 +8,7 @@
 <%= link_to "Back to Main page", root_path %>
 
 <body>
-<div id="delete_message">The PDF deletes it in  <span id="time">01:00</span> minutes!</div>
+<div id="delete_message">The PDF deletes it in  <span id="time">10:00</span> minutes!</div>
 </body>
 
 <script>
@@ -40,7 +41,7 @@
     }
 
     window.onload = function () {
-        var fiveMinutes = 60 * 1,
+        var fiveMinutes = 60 * 10,
             display = document.querySelector('#time');
         startTimer(fiveMinutes, display);
 

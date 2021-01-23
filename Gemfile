@@ -11,8 +11,7 @@ group :development do
   gem 'mysql2', '>= 0.4.4'
 end
 
-# Use Puma as the app server
-gem 'puma', '~> 4.1'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -37,6 +36,8 @@ gem 'prawn'
 group :production do
   # Use mysql as the database for Active Record
   gem 'pg'
+  # Use Puma as the app server
+  gem 'puma', '~> 4.1'
 end
 
 # Reduces boot times through caching; required in config/boot.rb

@@ -54,3 +54,8 @@ input[type=file][data-direct-upload-url][disabled] {
 }
 
 /* Main Page Application.html css*/
+
+body{
+    background: rgb(6,163,115);
+    background: linear-gradient(90deg, rgba(6,163,115,1) 0%, rgba(53,201,97,1) 35%, rgba(0,255,153,1) 100%);
+}

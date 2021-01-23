@@ -83,3 +83,20 @@ $("#file_upload").click(function() {
         dataType: "json"
     });
 });
+
+$(function(){
+    var flashDurationInSeconds = 3;
+    var flashContainerId = 'flash-messages';
+
+    function removeFlashMessages() {
+        $('#' + flashContainerId).remove();
+    }
+
+    setTimeout(removeFlashMessages, flashDurationInSeconds * 1000);
+});
+
+$('document').ready(function() {
+    setTimeout(function() {
+        $('#flash-message').slideUp();
+    }, 3000);
+});

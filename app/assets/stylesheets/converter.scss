@@ -1,3 +1,27 @@
 // Place all the styles related to the Converter controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+.container{
+  width: 30%;
+  height: 200px;
+  border: 3px solid green;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.title{
+  text-align: center;
+  padding: 10px;
+  color: white;
+}
+
+input { margin-bottom: 10px; }
+
+#file_upload{
+  margin:0 auto;
+}
+
+.notice{
+
+}

@@ -1,17 +1,28 @@
-<h1>File Converter</h1>
+<div class="title"><h1>PDFer</h1></div>
 <% if flash[:notice] %>
-  <div class="notice"><%= flash[:notice] %></div>
+  <div class="flash-messages">
+    <div class="alert alert-success">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <%= flash[:notice] %>
+    </div>
+  </div>
 <% end %>
 
-<%= form_for :conversion, :html => { :multipart => true }, :url =>{:action => 'convert'} do |f|%>
-  <%#= f.file_field :file, direct_upload: true, class: 'form-control' %>
-  <%= f.file_field :file, id: 'input_file' , class: 'form-control' %>
+<div class="container">
+  <%= form_for :conversion, :html => { :multipart => true }, :url =>{:action => 'convert'}, class: "form-group" do |f|%>
+    <%#= f.file_field :file, direct_upload: true, class: 'form-control' %>
+    <%= f.label :file, 'Choose File' %>
+    <%= f.file_field :file, id: 'input_file' , class: 'form-control' %>
 
-  <%= f.submit "Upload", id: 'file_upload' ,data: {disable_with: "Converting..."} %>
-<% end %>
-
-<div class="progress">
-  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    <%= f.button "Upload", id: 'file_upload', class: "btn btn-success" ,data: {disable_with: "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>
+      <span class='sr-only'>Loading...</span> Converting..."}, style: 'display:flex; justify-content:center;'
+    %>
+  <% end %>
 </div>
+
+
+<!--<div class="progress">-->
+<!--  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>-->
+<!--</div>-->
 
 
