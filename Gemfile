@@ -31,7 +31,6 @@ gem 'jbuilder', '~> 2.7'
 gem 'jquery-rails'
 
 gem 'libreconv'
-gem 'prawn'
 
 group :production do
   # Use mysql as the database for Active Record

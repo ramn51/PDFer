@@ -56,6 +56,15 @@ input[type=file][data-direct-upload-url][disabled] {
 /* Main Page Application.html css*/
 
 body{
-    background: rgb(6,163,115);
-    background: linear-gradient(90deg, rgba(6,163,115,1) 0%, rgba(53,201,97,1) 35%, rgba(0,255,153,1) 100%);
+    /*background: rgb(30,172,129);*/
+    /*background: linear-gradient(90deg, rgba(30,172,129,1) 0%, rgba(26,214,80,1) 35%, rgba(13,134,86,1) 100%);*/
+    /*background: #11998e;  !* fallback for old browsers *!*/
+    /*background: -webkit-linear-gradient(to right, #38ef7d, #11998e);  !* Chrome 10-25, Safari 5.1-6 *!*/
+    /*background: linear-gradient(to right, #38ef7d, #11998e); !* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ *!*/
+    background: #1D976C;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #93F9B9, #1D976C);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #93F9B9, #1D976C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
 }
+
+

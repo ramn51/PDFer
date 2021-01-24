@@ -5,13 +5,24 @@ class ConverterController < ApplicationController
   PDF_DELETE_BASE_TIME = 10 # 10 min
 
   rescue_from ActionController::MissingFile, with: :error_render_method
+  rescue_from ActionController::ParameterMissing do |exception|
+    render json: { error: exception.message }, status: :bad_request
+  end
 
   def index
     render 'index'
   end
 
   def convert
-    file_data = params[:conversion][:file]
+    # avoid NoMethodError and auto abort
+    file_data = params.try(:[], :conversion).try(:[], :file)
+    if file_data.nil?
+      flash[:error] = 'Conversion failed'
+      return respond_to do |format|
+        format.html { render file: 'public/400.html' }
+        format.json { render json: 'Error in processing', status: :unprocessable_entity }
+      end
+    end
 
     if file_data.respond_to?(:read)
       File.open(Rails.root.join('public', 'uploads', file_data.original_filename), 'wb') do |file|
@@ -28,22 +39,22 @@ class ConverterController < ApplicationController
         Libreconv.convert(file_to_convert, dest_file)
         logger.debug { "File Converted: #{file_data.original_filename}" }
 
-        render :action => "show", :locals => { file_name: dest_file_name, time_to_destory: PDF_DELETE_BASE_TIME  }
-        flash[:notice] = "Successfully converted"
+        render action: 'show', locals: { file_name: dest_file_name, time_to_destory: PDF_DELETE_BASE_TIME }
+        flash[:notice] = 'Successfully converted'
       rescue => e
         logger.error { "Couldn't not convert file: #{file_data.class.name}: #{file_data.inspect}, #{e}" }
         flash.now[:error] = 'Conversion failed'
-        render json: {message: 'something went wrong'}, status: :service_unavailable
+        render 'public/500.html'
       ensure
-        file_cleanup file_data.original_filename, "uploads"
-        logger.info {"File cleanup initiated for uploaded doc #{file_data.original_filename}"}
+        file_cleanup file_data.original_filename, 'uploads'
+        logger.info { "File cleanup initiated for uploaded doc #{file_data.original_filename}" }
 
-        file_cleanup dest_file_name, "readys" ,true
+        file_cleanup dest_file_name, 'readys' ,true
       end
 
     else
       logger.error { "Bad file_data: #{file_data.class.name}: #{file_data.inspect}" }
-      render json: {message: 'file is not docx or doc'}, status: :bad_request
+      render json: { message: 'file is not readable or it not docx or doc' }, status: :bad_request
     end
 
   end
@@ -54,12 +65,12 @@ class ConverterController < ApplicationController
 
   def download
     file_name = params[:download_file_name]
-    send_file "#{Rails.root}/public/readys/" + "#{file_name}"
+    send_file "#{Rails.root}/public/readys/#{file_name}"
   end
 
   def error_render_method
     respond_to do |format|
-      format.html { render :file => 'public/404.html' }
+      format.html { render file: 'public/404.html' }
       format.json { render json: 'Error in processing', status: :unprocessable_entity }
     end
   end
@@ -67,7 +78,7 @@ class ConverterController < ApplicationController
   private
 
   def converter_params
-    params.require(:conversion).permit(:file_name, :file_type, :download_file_name, :file => {})
+    params.require(:conversion).permit(:file_name, :file_type, :download_file_name, file: {})
   end
 
   def file_cleanup(file_name, directory, later=false)
@@ -83,7 +94,7 @@ class ConverterController < ApplicationController
     file_name = file_data.original_filename.split('.docx')
     dest_file_name = file_name[0] + '.pdf'
 
-    ["#{Rails.root}/public/readys" + '/' + "#{dest_file_name}", dest_file_name]
+    ["#{Rails.root}/public/readys/#{dest_file_name}", dest_file_name]
   end
 
 end

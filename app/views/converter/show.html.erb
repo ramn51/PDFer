@@ -1,15 +1,24 @@
 <div class="convert_title"><h1> Your File has been converted </h1></div>
 <div class="convert_file"> <h6>Converted File Name: </h6> <%= file_name %></div>
 
-<%# if time_to_destory  %>
-<div id="download">
-  <%= link_to "Download the file", download_path(:download_file_name => file_name), target: "_blank"%>
-</div>
-<%= link_to "Back to Main page", root_path %>
-
 <body>
-<div id="delete_message">The PDF deletes it in  <span id="time">10:00</span> minutes!</div>
+<div class="alert alert-warning">
+  <div id="delete_message">The PDF deletes it in  <span id="time">10:00</span> minutes!</div>
+</div>
+
 </body>
+
+<div id="button-container">
+  <div id="download">
+    <%= link_to "Download the file", download_path(:download_file_name => file_name), target: "_blank", class: 'btn btn-success'%>
+  </div>
+
+  <div id="link_to_main">
+    <%= link_to "Back to Main page", root_path, class: 'btn btn-info' %>
+  </div>
+
+</div>
+
 
 <script>
     function startTimer(duration, display) {

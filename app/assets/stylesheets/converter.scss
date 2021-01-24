@@ -5,9 +5,15 @@
 .container{
   width: 30%;
   height: 200px;
-  border: 3px solid green;
+  //border: 3px solid green;
   padding: 20px;
   border-radius: 10px;
+  background: white;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.container:hover{
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
 .title{
@@ -22,6 +28,24 @@ input { margin-bottom: 10px; }
   margin:0 auto;
 }
 
-.notice{
+.convert_file{
+  text-align: center;
+}
 
+#button-container div{
+  display: inline-block;
+  margin-left: 45%;
+  padding: 10px;
+}
+
+.convert_title{
+  text-align: center;
+}
+
+#delete_message{
+  text-align: center;
+}
+
+.flash-messages{
+  text-align: center;
 }

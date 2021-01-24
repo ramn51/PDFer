@@ -97,6 +97,6 @@ $(function(){
 
 $('document').ready(function() {
     setTimeout(function() {
-        $('#flash-message').slideUp();
+        $('#flash-messages').slideUp();
     }, 3000);
 });
