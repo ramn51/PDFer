@@ -5,4 +5,7 @@ Rails.application.routes.draw do
   post 'convert', to: 'converter#convert'
   get 'download', to: 'converter#download'
 
+  resources :issue, except: %i[edit update]
+  resources :release
+
 end

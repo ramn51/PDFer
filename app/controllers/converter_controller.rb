@@ -39,12 +39,17 @@ class ConverterController < ApplicationController
         Libreconv.convert(file_to_convert, dest_file)
         logger.debug { "File Converted: #{file_data.original_filename}" }
 
+        # PdferMailer.sample_email('ramnarayanan51@gmail.com').deliver_now
         render action: 'show', locals: { file_name: dest_file_name, time_to_destory: PDF_DELETE_BASE_TIME }
         flash[:notice] = 'Successfully converted'
+
       rescue => e
         logger.error { "Couldn't not convert file: #{file_data.class.name}: #{file_data.inspect}, #{e}" }
         flash.now[:error] = 'Conversion failed'
-        render 'public/500.html'
+
+        # render 'public/500.html'
+        render json: { message: 'File not converted' }, status: :bad_request
+
       ensure
         file_cleanup file_data.original_filename, 'uploads'
         logger.info { "File cleanup initiated for uploaded doc #{file_data.original_filename}" }

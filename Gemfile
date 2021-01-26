@@ -32,6 +32,8 @@ gem 'jquery-rails'
 
 gem 'libreconv'
 
+gem 'figaro'
+
 group :production do
   # Use mysql as the database for Active Record
   gem 'pg'
