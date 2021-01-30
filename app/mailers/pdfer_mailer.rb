@@ -1,10 +1,12 @@
 class PdferMailer < ApplicationMailer
-  default from: "ramnarayanan51@gmail.com"
+  default from: PDFER_CONSTANTS['developer_email']
   layout 'mailer'
 
-  def sample_email(user)
+  def logger_email(user = PDFER_CONSTANTS['developer_email'], incident_time, specific_error)
     @user = user
-    attachments['production.log'] = File.read(Rails.root.join('log', 'development.log'))
-    mail(to: @user, subject: 'Sample Email')
+    @time_of_incident = incident_time
+    @error = specific_error
+    attachments['production.log'] = File.read(Rails.root.join('log', "#{Rails.env}.log"))
+    mail(to: @user, subject: 'PDFer Error logger notification')
   end
 end

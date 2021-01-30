@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "ramnarayanan51@gmail.com"
+  default from: PDFER_CONSTANTS['developer_email']
   layout 'mailer'
 end
