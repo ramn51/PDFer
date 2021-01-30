@@ -24,6 +24,9 @@ class ConverterController < ApplicationController
       end
     end
 
+    # validate for pdf file uploaded
+    return error_render_method(400) unless file_data.content_type != 'application/pdf'
+
     if file_data.respond_to?(:read)
       File.open(Rails.root.join('public', 'uploads', file_data.original_filename), 'wb') do |file|
         file.write(file_data.read)
@@ -34,7 +37,7 @@ class ConverterController < ApplicationController
 
       # remove extension of the file from name and set location and path for download
       dest_file, dest_file_name = make_dest_file file_data
-      # PdferMailer.logger_email(Time.now, 'No error just a test').deliver_now
+
       begin
         Libreconv.convert(file_to_convert, dest_file)
         logger.debug { "File Converted: #{file_data.original_filename}" }
@@ -42,19 +45,17 @@ class ConverterController < ApplicationController
         render action: 'show', locals: { file_name: dest_file_name, time_to_destory: PDF_DELETE_BASE_TIME }
         flash[:notice] = 'Successfully converted'
 
-      rescue => e
-        logger.error { "Couldn't not convert file: #{file_data.class.name}: #{file_data.inspect}, ERROR: #{e}" }
+      rescue => error
+        logger.error { "Couldn't not convert file: #{file_data.class.name}: #{file_data.inspect}, ERROR: #{error}" }
         flash.now[:error] = 'Conversion failed'
-
         # send log report of the error
-        send_error_mail Time.now, e
-        # render 'public/500.html'
-        render json: { message: 'File not converted' }, status: :bad_request
+        send_error_mail Time.now, error
 
+        render file: 'public/500.html'
+        # render json: { message: 'File not converted' }, status: :bad_request
       ensure
         file_cleanup file_data.original_filename, 'uploads'
         logger.info { "File cleanup initiated for uploaded doc #{file_data.original_filename}" }
-        send_error_mail Time.now, 'no error just test'
         file_cleanup dest_file_name, 'readys', true
       end
 
@@ -74,10 +75,13 @@ class ConverterController < ApplicationController
     send_file "#{Rails.root}/public/readys/#{file_name}"
   end
 
-  def error_render_method
+  def error_render_method(error_type = 404)
     respond_to do |format|
-      format.html { render file: 'public/404.html' }
-      format.json { render json: 'Error in processing', status: :unprocessable_entity }
+      format.html { render file: "public/#{error_type}.html" }
+      format.json do
+        render json: (error_type == 404 ? 'Error in processing' : 'Bad request, content not supported'),
+               status: :unprocessable_entity
+      end
     end
   end
 
@@ -87,7 +91,7 @@ class ConverterController < ApplicationController
     params.require(:conversion).permit(:file_name, :file_type, :download_file_name, file: {})
   end
 
-  def file_cleanup(file_name, directory, later=false)
+  def file_cleanup(file_name, directory, later = false)
     path = "#{Rails.root}/public/#{directory}/" + "#{file_name}"
     if later
       UploadsCleanupJob.set(wait_until: Time.now + PDF_DELETE_BASE_TIME.minutes).perform_later path
