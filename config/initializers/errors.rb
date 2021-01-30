@@ -3,7 +3,7 @@ SMTP_SERVER_ERRORS = [
     Net::SMTPAuthenticationError,
     Net::SMTPServerBusy,
     Net::SMTPUnknownError,
-    TimeoutError,
+    Timeout::Error,
 ]
 
 SMTP_CLIENT_ERRORS = [Net::SMTPFatalError, Net::SMTPSyntaxError].freeze
