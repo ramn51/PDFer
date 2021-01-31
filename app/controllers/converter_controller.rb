@@ -17,7 +17,7 @@ class ConverterController < ApplicationController
     # avoid NoMethodError and auto abort
     file_data = params.try(:[], :conversion).try(:[], :file)
     if file_data.nil?
-      flash[:error] = 'Conversion failed'
+      flash[:error] = 'Conversion failed, No file was uploaded'
       return respond_to do |format|
         format.html { render file: 'public/400.html' }
         format.json { render json: 'Error in processing', status: :unprocessable_entity }
@@ -25,7 +25,10 @@ class ConverterController < ApplicationController
     end
 
     # validate for pdf file uploaded
-    return error_render_method(400) unless file_data.content_type != 'application/pdf'
+    unless file_data.content_type != 'application/pdf'
+      flash[:error] = 'Conversion failed, PDF file was uploaded'
+      return error_render_method(400)
+    end
 
     if file_data.respond_to?(:read)
       File.open(Rails.root.join('public', 'uploads', file_data.original_filename), 'wb') do |file|
