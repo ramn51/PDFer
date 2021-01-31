@@ -32,6 +32,11 @@ gem 'jquery-rails'
 
 gem 'libreconv'
 
+gem 'figaro'
+
+# Scheduler gem for heroku dyno pinging
+gem 'rufus-scheduler'
+
 group :production do
   # Use mysql as the database for Active Record
   gem 'pg'

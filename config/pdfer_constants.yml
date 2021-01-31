@@ -1,0 +1,11 @@
+defaults: &defaults
+  developer_email: 'ramnarayanan51@gmail.com'
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
